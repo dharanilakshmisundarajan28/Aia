@@ -1,0 +1,65 @@
+#BFS
+from collections import deque
+graph = {}
+n = int(input("How many nodes? "))
+
+for i in range(n):
+    node = input(f"Node {i+1}: ")
+    neighbors = input(f"Neighbors of {node} (comma-separated): ")
+    graph[node] = neighbors.replace(" ", "").split(",") if neighbors else []
+start = input("Start node: ")
+goal = input("Goal node: ")
+visited = []
+queue = deque([[start]])
+path = []
+while queue:
+    p = queue.popleft()
+    node = p[-1]
+
+    if node not in visited:
+        visited.append(node)
+
+        if node == goal:
+            path = p
+            break
+
+        for nb in graph[node]:
+            queue.append(p + [nb])
+print("\nVisited:", visited)
+print("Path:", " -> ".join(path) if path else "No path")
+
+
+
+graph = {}
+n = int(input("How many nodes? "))
+for i in range(n):
+    node = input(f"Node {i+1} name: ").strip()
+    neigh = input(f"Neighbors of {node} (comma-separated): ").strip()
+    graph[node] = neigh.replace(" ", "").split(",") if neigh else []
+
+for node in list(graph):
+    for nb in graph[node]:
+        if nb not in graph:
+            graph[nb] = []
+
+start = input("Start node: ").strip()
+end = input("End node: ").strip()
+visited = []
+stack = [[start]]
+path = []
+# DFS
+while stack:
+    p = stack.pop()
+    node = p[-1]
+
+    if node not in visited:
+        visited.append(node)
+
+        if node == end:
+            path = p
+            break
+
+        for nb in reversed(graph[node]):
+            stack.append(p + [nb])
+print("\nVisited:", visited)
+print("Path:", " -> ".join(path) if path else "No path")
