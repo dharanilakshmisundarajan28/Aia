@@ -1,26 +1,26 @@
-rules = [ 
-    {"if": {"fever", "cough", "fatigue"}, "then": "Flu"}, 
-    {"if": {"fever", "cough", "shortness of breath"}, "then": "COVID-19"}, 
-    {"if": {"headache", "nausea", "sensitivity to light"}, "then": "Migraine"}, 
-    {"if": {"sore throat", "runny nose", "sneezing"}, "then": "Common Cold"}, 
-    {"if": {"chest pain", "shortness of breath", "dizziness"}, "then": "Heart Attack"}, 
+rules = [
+    ({"fever", "cough", "fatigue"}, "Flu"),
+    ({"fever", "cough", "shortness of breath"}, "COVID-19"),
+    ({"headache", "nausea", "sensitivity to light"}, "Migraine"),
+    ({"sore throat", "runny nose", "sneezing"}, "Common Cold"),
+    ({"chest pain", "shortness of breath", "dizziness"}, "Heart Attack"),
 ]
 
 def diagnose(symptoms):
-    return [rule["then"] for rule in rules if rule["if"].issubset(set(symptoms))]
+    s = set(symptoms)
+    return [d for cond, d in rules if cond.issubset(s)]
 
 print("=== Medical Expert System ===")
-user_input = input("Enter symptoms separated by commas: ").lower()
-symptoms = [s.strip() for s in user_input.split(",")]
+symptoms = [s.strip() for s in input("Enter symptoms (comma-separated): ").lower().split(",")]
 
-diagnoses = diagnose(symptoms)
+result = diagnose(symptoms)
 
-if diagnoses:
+if result:
     print("Possible diagnosis(es):")
-    for d in diagnoses:
-        print(f"- {d}")
+    for r in result: print("-", r)
 else:
     print("No matching diagnosis found. Please consult a doctor.")
+
 
 
 #-------
