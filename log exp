@@ -1,0 +1,37 @@
+def implies(p, q):
+    return (not p) or q
+
+def iff(p, q):
+    return p == q
+
+A = True
+B = False
+C = True
+
+print("A ∧ ¬C =", A and not C)
+print("(A ∨ B) ∧ C =", (A or B) and C)
+print("¬B ∨ A =", (not B) or A)
+print("A → C =", implies(A, C))
+print("B ↔ C =", iff(B, C))
+
+
+
+# Dynamic Propositional Logic Evaluation
+def implies(p, q):
+    return (not p) or q
+
+def iff(p, q):
+    return p == q
+
+props = {}
+n = int(input("Number of propositions: "))
+for _ in range(n):
+    name = input("Name of proposition: ").strip()
+    val = input(f"Value of {name} (True/False): ").strip().lower()
+    props[name] = True if val == "true" else False
+
+expr = input("Enter logical expression (use and, or, not, -> for implies, <-> for iff): ")
+expr = expr.replace("->", " implies ").replace("<->", " iff ")
+
+result = eval(expr, {"__builtins__": None}, {**props, "implies": implies, "iff": iff})
+print("Result:", result)
