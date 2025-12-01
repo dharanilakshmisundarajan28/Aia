@@ -1,0 +1,18 @@
+from textblob import TextBlob
+
+user_int = input("Enter the passage: ")
+
+analyser = TextBlob(user_int)
+polarity = analyser.sentiment.polarity
+subjectivity = analyser.sentiment.subjectivity
+
+if polarity > 0:
+    sen = "Positive"
+elif polarity < 0:
+    sen = "Negative"
+else:
+    sen = "Neutral"
+
+print("Polarity:", polarity)
+print("Subjectivity:", subjectivity)
+print("Sentiment:", sen)
