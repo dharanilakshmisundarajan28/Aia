@@ -1,0 +1,104 @@
+#A* Search
+#A-B,C B-C C-D D
+graph = {}
+h = {}
+n = int(input("How many nodes? "))
+
+for i in range(n):
+    node = input(f"Node {i+1} name: ").strip()
+    neighbors = input(f"Neighbors of {node} as (name cost), comma-separated: ").strip()
+
+    neigh_list = []
+    if neighbors:
+        for item in neighbors.split(","):
+            name, cost = item.strip().split()
+            neigh_list.append((name, int(cost)))
+
+    graph[node] = neigh_list
+
+for node in list(graph):
+    for nb, _ in graph[node]:
+        if nb not in graph:
+            graph[nb] = []
+
+print("\nEnter heuristic values:")
+for node in graph:
+    h[node] = int(input(f"Heuristic for {node}: "))
+
+start = input("\nStart node: ").strip()
+goal = input("Goal node: ").strip()
+visited = []
+open_list = [(start, [start], 0)]   # (node, path, g_cost)
+path = []
+
+while open_list:
+    # Sort by f = g + h
+    open_list.sort(key=lambda x: x[2] + h[x[0]])
+    node, p, g = open_list.pop(0)
+
+    if node not in visited:
+        visited.append(node)
+
+        if node == goal:
+            path = p
+            break
+
+        for nb, cost in graph[node]:
+            new_cost = g + cost
+            open_list.append((nb, p + [nb], new_cost))
+
+print("\nVisited:", visited)
+print("Path:", "->".join(path) if path else "No path")
+
+#-----
+#A-B1,C3 B-D2 C D1 D 3210 
+def greedy_best_first_search(graph, h, start, goal):
+    print("\nGreedy Best-First Search")
+    open_list = [(start, [start])]
+    visited = set()
+
+    while open_list:
+        open_list.sort(key=lambda x: h[x[0]])  
+        current, path = open_list.pop(0)
+        print("Visiting:", current)
+
+        if current == goal:
+            print("\nGoal Reached!")
+            return path
+
+        visited.add(current)
+        for neighbor, _ in graph.get(current, []):
+            if neighbor not in visited:
+                open_list.append((neighbor, path + [neighbor]))
+
+    print("\nNo Path Found.")
+    return None
+
+graph = {}
+n = int(input("Enter number of nodes: "))
+for _ in range(n):
+    node = input("Enter node: ").strip()
+    neighbors_input = input(f"Enter neighbors of {node} as 'name cost', separated by commas: ").strip()
+    if neighbors_input:
+        neighbor_list = []
+        for pair in neighbors_input.split(','):
+            name, cost = pair.strip().split()
+            neighbor_list.append((name, int(cost)))
+        graph[node] = neighbor_list
+    else:
+        graph[node] = []
+
+h = {}
+print("Enter heuristic values:")
+for node in graph:
+    h[node] = int(input(f"Heuristic for {node}: "))
+
+start = input("Enter start node: ").strip()
+goal = input("Enter goal node: ").strip()
+
+result = greedy_best_first_search(graph, h, start, goal)
+
+print("\nFinal Output")
+print("Algorithm: Greedy Best-First Search")
+print("Path:", " -> ".join(result) if result else "No valid path.")
+
