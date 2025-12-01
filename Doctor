@@ -1,0 +1,61 @@
+from kanren import Relation, facts, run, var, conde
+py -m pip install kanren
+# Knowledge base
+doctor = Relation()
+treats = Relation()
+
+facts(doctor, ("dr_smith",), ("dr_jones",), ("dr_lee",), ("dr_williams",), ("dr_davis",))
+facts(treats,
+      ("dr_smith", "flu"), ("dr_smith", "allergy"),
+      ("dr_jones", "cold"), ("dr_lee", "covid"), ("dr_lee", "pneumonia"),
+      ("dr_williams", "diabetes"), ("dr_davis", "hypertension"))
+
+def is_skilled(p):
+    return conde((doctor(p), treats(p, var())),)
+query = input("Enter query: ").strip().lower()
+x = var()
+
+if query.startswith("who"):
+    result = run(0, x, is_skilled(x))
+    if result:
+        print("✓ Skilled doctors found:")
+        for name in result:
+            print(f"- {name.replace('_',' ').title()}")
+    else:
+        print("X No skilled doctors found.")
+
+elif query.startswith("is"):
+    words = query.replace("?", "").split()
+    if len(words) >= 3:
+        name = words[1]
+        result = run(0, x, is_skilled(x))
+        print(f"✓ Yes, {name.replace('_',' ').title()} is skilled." if name in result
+              else f"X No, {name.replace('_',' ').title()} is not skilled.")
+    else:
+        print("X Invalid query format.")
+
+else:
+    print("X Invalid query format.")
+
+#====
+from kanren import Relation, facts, run, var
+
+doctor = Relation()
+treats = Relation()
+
+facts(doctor, ("dr_smith",), ("dr_jones",), ("dr_lee",), ("dr_williams",), ("dr_davis",))
+facts(treats,
+      ("dr_smith", "flu"), ("dr_smith", "allergy"),
+      ("dr_jones", "cold"), ("dr_lee", "covid"), ("dr_lee", "pneumonia"),
+      ("dr_williams", "diabetes"), ("dr_davis", "hypertension"))
+
+disease = input("Enter disease: ").strip().lower()
+x = var()
+result = run(0, x, treats(x, disease))
+
+if result:
+    print(f"Doctors who treat {disease.title()}:")
+    for name in result:
+        print(f"- {name.replace('_',' ').title()}")
+else:
+    print(f"No doctors found who treat {disease.title()}.")
