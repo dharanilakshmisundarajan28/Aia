@@ -1,0 +1,45 @@
+import random
+
+b=[" "]*9
+w=[(0,1,2),(3,4,5),(6,7,8),(0,3,6),(1,4,7),(2,5,8),(0,4,8),(2,4,6)]
+s=lambda : print(f"{b[0]}|{b[1]}|{b[2]}\n-+-+-\n{b[3]}|{b[4]}|{b[5]}\n-+-+-\n{b[6]}|{b[7]}|{b[8]}\n")
+win=lambda p: any(b[a]==b[b_]==b[c]==p for a,b_,c in w)
+while True:
+    m=int(input("Enter number : "))
+    if b[m]!=" ":
+        print("Invalid")
+        continue
+    b[m]="X"
+    s()
+    if win("X"):
+        print("You Win")
+        break
+    
+    if " " not in b:
+        print("Draw")
+        break
+
+    ai=random.choice([i for i in range(9) if b[i]==" "])
+    b[ai]="O"
+    s()
+    if win("O"):
+        print("Ai Won")
+        break
+
+
+import random
+w=[(0,1,2),(3,4,5),(6,7,8),(0,3,6),(1,4,7),(2,5,8),(0,4,8),(2,4,6)]
+win=lambda b,p: any(b[i]==b[j]==b[k]==p for i,j,k in w)
+
+def mm(b,t):
+    if win(b,'O'):
+        return 1
+    if win(b,'X'):
+        return -1
+    if " " not in b:
+        return 0
+    return(max if t=='O' else min)(mm(b[:i]+[t]+b[i+1:], "X" if t=="O" else "O") for i in range(9) if b[i]==" ")
+
+b = ["O", "X", "O", " ", "X", " ", " ", " ", " "]
+for i in range(9):
+    print(f"Moves {i+1}, Score {mm(b[:i]+['O']+b[i+1:],'X')}")
